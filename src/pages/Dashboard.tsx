@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { AnimatedBackground } from "@/components/common/AnimatedBackground";
+import { NortheastMap } from "@/components/map/NortheastMap";
 import { Button } from "@/components/ui/button";
+import { northeastStates } from "@/data/northeastStates";
+import { toast } from "sonner";
 import { 
   BarChart3, 
   TrendingUp, 
@@ -12,7 +15,9 @@ import {
   Droplets,
   Heart,
   Download,
-  RefreshCw
+  RefreshCw,
+  Send,
+  UserCheck
 } from "lucide-react";
 
 interface VillageData {
@@ -166,80 +171,10 @@ export function Dashboard() {
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Village Map */}
+          {/* Northeast India Map */}
           <div className="lg:col-span-2 space-y-6">
-            <GlassCard hover>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-foreground">Village Health Map</h3>
-                <div className="flex items-center space-x-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-accent-emerald"></div>
-                    <span className="text-muted-foreground">Safe</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-accent-yellow"></div>
-                    <span className="text-muted-foreground">Moderate</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-accent-coral"></div>
-                    <span className="text-muted-foreground">High Risk</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="relative h-96 bg-gradient-to-br from-bg-deep to-bg-navy rounded-lg overflow-hidden">
-                {/* Animated grid background */}
-                <div className="absolute inset-0 opacity-20">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="absolute border-l border-border" 
-                      style={{ left: `${i * 10}%`, height: "100%" }}
-                    />
-                  ))}
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="absolute border-t border-border" 
-                      style={{ top: `${i * 10}%`, width: "100%" }}
-                    />
-                  ))}
-                </div>
-                
-                {/* Village markers */}
-                {villages.map((village, index) => (
-                  <div
-                    key={village.id}
-                    className="absolute group cursor-pointer animate-bounce-in"
-                    style={{ 
-                      left: `${village.x}%`, 
-                      top: `${village.y}%`,
-                      animationDelay: `${index * 0.2}s`
-                    }}
-                  >
-                    <div className={`
-                      w-4 h-4 rounded-full transition-all duration-300 group-hover:scale-150
-                      ${village.status === 'high' ? 'bg-accent-coral animate-pulse-glow' : 
-                        village.status === 'medium' ? 'bg-accent-yellow' : 'bg-accent-emerald'}
-                    `}>
-                      {village.status === 'high' && (
-                        <div className="absolute inset-0 rounded-full bg-accent-coral/30 animate-ping"></div>
-                      )}
-                    </div>
-                    
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-background/90 backdrop-blur-sm border border-border rounded-lg p-3 text-sm whitespace-nowrap">
-                        <div className="font-bold text-foreground">{village.name}</div>
-                        <div className="text-muted-foreground">Cases: {village.cases}</div>
-                        <div className="text-muted-foreground">Water Quality: {village.waterQuality}</div>
-                        <div className="text-muted-foreground">Population: {village.population}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </GlassCard>
+            <NortheastMap />
+          </div>
 
             {/* Outbreak Trend Chart */}
             <GlassCard hover>
@@ -305,19 +240,35 @@ export function Dashboard() {
             <GlassCard hover>
               <h3 className="text-xl font-bold text-foreground mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Button variant="hero" className="w-full justify-start">
-                  <AlertTriangle className="w-4 h-4 mr-2" />
+                <Button 
+                  variant="hero" 
+                  className="w-full justify-start"
+                  onClick={() => toast.success("Alert sent to all health workers!")}
+                >
+                  <Send className="w-4 h-4 mr-2" />
                   Send Alert
                 </Button>
-                <Button variant="success" className="w-full justify-start">
-                  <Heart className="w-4 h-4 mr-2" />
+                <Button 
+                  variant="success" 
+                  className="w-full justify-start"
+                  onClick={() => toast.success("Doctor assigned to critical areas!")}
+                >
+                  <UserCheck className="w-4 h-4 mr-2" />
                   Assign Doctor
                 </Button>
-                <Button variant="glass" className="w-full justify-start">
+                <Button 
+                  variant="glass" 
+                  className="w-full justify-start"
+                  onClick={() => toast.success("Report generation started!")}
+                >
                   <BarChart3 className="w-4 h-4 mr-2" />
                   Generate Report
                 </Button>
-                <Button variant="glass" className="w-full justify-start">
+                <Button 
+                  variant="glass" 
+                  className="w-full justify-start"
+                  onClick={() => window.open('/reports', '_blank')}
+                >
                   <TrendingUp className="w-4 h-4 mr-2" />
                   View Analytics
                 </Button>

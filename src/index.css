@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Swastha Sarthi Dark Theme Design System */
+/* Swastha Sarthi Design System - Dark & Light Themes */
 @layer base {
   :root {
     /* Dark theme base colors */
@@ -71,6 +71,61 @@
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.37);
     --shadow-glow: 0 0 40px;
     --shadow-card: 0 8px 30px hsl(var(--bg-deep) / 0.6);
+  }
+
+  /* Light theme colors */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 222 84% 4.9%;
+    
+    --bg-deep: 210 40% 98%;
+    --bg-navy: 220 14% 96%;
+    
+    /* Accent colors adjusted for light theme */
+    --accent-cyan: 188 86% 53%;
+    --accent-purple: 263 70% 50%;
+    --accent-coral: 6 93% 71%;
+    --accent-yellow: 48 100% 67%;
+    --accent-emerald: 158 64% 52%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 4.9%;
+    --card-glass: 0 0% 0% / 0.02;
+    
+    --primary: 188 86% 53%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 210 40% 4.9% / 0.06;
+    --secondary-foreground: 222 84% 4.9%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 46.9%;
+    
+    --accent: 263 70% 50%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 158 64% 52%;
+    --warning: 48 100% 67%;
+    --info: 188 86% 53%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 188 86% 53%;
+    
+    /* Light theme gradients */
+    --gradient-bg: linear-gradient(160deg, hsl(var(--background)), hsl(var(--bg-navy)));
+    
+    /* Light theme glass effects */
+    --glass-light: rgba(0, 0, 0, 0.03);
+    --glass-medium: rgba(0, 0, 0, 0.06);
+    --glass-strong: rgba(0, 0, 0, 0.1);
+    
+    /* Light theme shadows */
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.08);
   }
 }
 

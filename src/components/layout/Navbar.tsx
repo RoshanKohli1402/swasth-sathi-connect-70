@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/hooks/useTheme";
 import { 
   Home, 
   BarChart3, 
@@ -9,7 +10,9 @@ import {
   BookOpen, 
   FileSpreadsheet,
   Menu,
-  X
+  X,
+  Sun,
+  Moon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +28,7 @@ const navigation = [
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="sticky top-0 z-50 glass-card border-b border-border">
@@ -63,6 +67,20 @@ export function Navbar() {
                 </Link>
               );
             })}
+            
+            {/* Theme Toggle */}
+            <Button
+              variant="minimal"
+              size="icon"
+              onClick={toggleTheme}
+              className="ml-2"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
+            </Button>
           </div>
 
           {/* Mobile menu button */}

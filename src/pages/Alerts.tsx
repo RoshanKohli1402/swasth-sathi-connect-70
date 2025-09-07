@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { AnimatedBackground } from "@/components/common/AnimatedBackground";
+import { AlertCreationWizard } from "@/components/alerts/AlertCreationWizard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { 
   AlertTriangle, 
   MapPin, 
@@ -17,7 +19,8 @@ import {
   Droplets,
   TrendingUp,
   Search,
-  Filter
+  Filter,
+  Plus
 } from "lucide-react";
 
 interface Alert {
@@ -37,6 +40,7 @@ interface Alert {
 }
 
 export function Alerts() {
+  const [showCreateWizard, setShowCreateWizard] = useState(false);
   const [alerts, setAlerts] = useState<Alert[]>([
     {
       id: 1,
@@ -178,11 +182,21 @@ export function Alerts() {
           </div>
           
           <div className="flex items-center space-x-3 animate-slide-in-right">
-            <Button variant="hero" size="sm" className="flex items-center space-x-2">
-              <Send className="w-4 h-4" />
-              <span>Send Alert</span>
+            <Button 
+              variant="hero" 
+              size="sm" 
+              className="flex items-center space-x-2"
+              onClick={() => setShowCreateWizard(true)}
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create Alert</span>
             </Button>
-            <Button variant="glass" size="sm" className="flex items-center space-x-2">
+            <Button 
+              variant="glass" 
+              size="sm" 
+              className="flex items-center space-x-2"
+              onClick={() => toast.info("Notifications: 5 new updates")}
+            >
               <Bell className="w-4 h-4" />
               <span>Notifications</span>
             </Button>
@@ -383,19 +397,35 @@ export function Alerts() {
             <GlassCard hover>
               <h3 className="text-lg font-bold text-foreground mb-4">Quick Actions</h3>
               <div className="space-y-2">
-                <Button variant="hero" className="w-full justify-start">
+                <Button 
+                  variant="hero" 
+                  className="w-full justify-start"
+                  onClick={() => toast.success("Broadcasting alert to all channels!")}
+                >
                   <Send className="w-4 h-4 mr-2" />
                   Broadcast Alert
                 </Button>
-                <Button variant="glass" className="w-full justify-start">
+                <Button 
+                  variant="glass" 
+                  className="w-full justify-start"
+                  onClick={() => toast.info("Calling emergency services...")}
+                >
                   <Phone className="w-4 h-4 mr-2" />
                   Call Emergency
                 </Button>
-                <Button variant="glass" className="w-full justify-start">
+                <Button 
+                  variant="glass" 
+                  className="w-full justify-start"
+                  onClick={() => toast.success("Medical support team contacted!")}
+                >
                   <Heart className="w-4 h-4 mr-2" />
                   Medical Support
                 </Button>
-                <Button variant="glass" className="w-full justify-start">
+                <Button 
+                  variant="glass" 
+                  className="w-full justify-start"
+                  onClick={() => window.open('/reports', '_blank')}
+                >
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Analytics
                 </Button>
@@ -423,6 +453,17 @@ export function Alerts() {
           </div>
         </div>
       </div>
+
+      {/* Alert Creation Wizard */}
+      {showCreateWizard && (
+        <AlertCreationWizard 
+          onClose={() => setShowCreateWizard(false)}
+          onSubmit={(newAlert) => {
+            setAlerts(prev => [newAlert, ...prev]);
+            setShowCreateWizard(false);
+          }}
+        />
+      )}
     </div>
   );
 }
