@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
+import { LanguageSelector } from "@/components/common/LanguageSelector";
+import { VoiceController } from "@/components/voice/VoiceController";
+import { useTranslation } from 'react-i18next';
 import { 
   Home, 
   BarChart3, 
@@ -29,6 +32,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <nav className="sticky top-0 z-50 glass-card border-b border-border">
@@ -53,20 +57,27 @@ export function Navbar() {
               
               return (
                 <Link key={item.name} to={item.href}>
-                  <Button 
-                    variant={isActive ? "hero" : "minimal"}
-                    size="sm"
-                    className={cn(
-                      "flex items-center space-x-2",
-                      isActive && "animate-pulse-glow"
-                    )}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.name}</span>
-                  </Button>
+                    <Button 
+                      variant={isActive ? "hero" : "minimal"}
+                      size="sm"
+                      className={cn(
+                        "flex items-center space-x-2",
+                        isActive && "animate-pulse-glow"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{t(item.name.toLowerCase())}</span>
+                    </Button>
                 </Link>
               );
             })}
+            
+            
+            {/* Voice Controller */}
+            <VoiceController />
+            
+            {/* Language Selector */}
+            <LanguageSelector />
             
             {/* Theme Toggle */}
             <Button
@@ -121,7 +132,7 @@ export function Navbar() {
                       )}
                     >
                       <Icon className="w-4 h-4" />
-                      <span>{item.name}</span>
+                      <span>{t(item.name.toLowerCase())}</span>
                     </Button>
                   </Link>
                 );

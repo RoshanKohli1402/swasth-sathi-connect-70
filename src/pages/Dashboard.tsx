@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { AnimatedBackground } from "@/components/common/AnimatedBackground";
-import { NortheastMap } from "@/components/map/NortheastMap";
+import { SatelliteMap } from "@/components/map/SatelliteMap";
+import { VoiceController } from "@/components/voice/VoiceController";
 import { Button } from "@/components/ui/button";
 import { northeastStates } from "@/data/northeastStates";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -32,6 +34,7 @@ interface VillageData {
 }
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const [villages, setVillages] = useState<VillageData[]>([
     { id: 1, name: "Rampur", x: 18, y: 30, cases: 2, status: "low", waterQuality: 7.2, population: 1250 },
     { id: 2, name: "Nongya", x: 42, y: 50, cases: 8, status: "high", waterQuality: 4.1, population: 890 },
@@ -94,18 +97,21 @@ export function Dashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 space-y-4 sm:space-y-0">
           <div className="animate-fade-in">
-            <h1 className="text-3xl font-bold gradient-text">Health Dashboard</h1>
+            <h1 className="text-3xl font-bold gradient-text">{t('dashboard')}</h1>
             <p className="text-muted-foreground">Real-time community health monitoring</p>
           </div>
           
           <div className="flex items-center space-x-3 animate-slide-in-right">
+            <VoiceController onQuickAction={(action) => {
+              if (action === 'refresh') refreshData();
+            }} />
             <Button variant="glass" size="sm" onClick={refreshData} className="flex items-center space-x-2">
               <RefreshCw className="w-4 h-4" />
-              <span>Refresh</span>
+              <span>{t('refresh_data')}</span>
             </Button>
             <Button variant="minimal" size="sm" className="flex items-center space-x-2">
               <Download className="w-4 h-4" />
-              <span>Export</span>
+              <span>{t('export_report')}</span>
             </Button>
           </div>
         </div>
@@ -173,7 +179,7 @@ export function Dashboard() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Northeast India Map */}
           <div className="lg:col-span-2 space-y-6">
-            <NortheastMap />
+            <SatelliteMap />
             
             {/* Outbreak Trend Chart */}
             <GlassCard hover>
