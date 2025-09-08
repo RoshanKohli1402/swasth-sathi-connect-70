@@ -174,8 +174,7 @@ export function Dashboard() {
           {/* Northeast India Map */}
           <div className="lg:col-span-2 space-y-6">
             <NortheastMap />
-          </div>
-
+            
             {/* Outbreak Trend Chart */}
             <GlassCard hover>
               <h3 className="text-xl font-bold text-foreground mb-4">Outbreak Trend</h3>
