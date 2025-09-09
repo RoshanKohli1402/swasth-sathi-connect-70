@@ -28,6 +28,17 @@ const resources = {
       "outbreak_trend": "Outbreak Trend",
       "quick_actions": "Quick Actions",
       "system_status": "System Status",
+      "riskPrediction": "Outbreak Risk Prediction",
+      "realTime": "Real-time",
+      "cases": "cases",
+      "riskDetails": "Risk Analysis Details",
+      "riskFactors": "Risk Factors",
+      "confidence": "Confidence",
+      "risk": {
+        "high": "High Risk",
+        "medium": "Medium Risk",
+        "low": "Low Risk"
+      },
       
       // Map
       "northeast_india_map": "Northeast India Health Map",
@@ -54,6 +65,24 @@ const resources = {
       "listening": "Listening...",
       "voice_commands": "Voice Commands",
       "speak_command": "Speak your command",
+      "voice": {
+        "connected": "Voice assistant connected",
+        "disconnected": "Voice assistant disconnected",
+        "error": "Voice recognition error",
+        "greeting": "Hello! I am your health monitoring assistant. How can I help you today?",
+        "setup": "Voice Assistant Setup",
+        "setupRequired": "Please enter API key and Agent ID",
+        "setupFailed": "Failed to setup voice assistant",
+        "setupFirst": "Please setup voice assistant first",
+        "toggleFailed": "Failed to toggle voice assistant",
+        "volumeAdjusted": "Volume adjusted",
+        "volumeFailed": "Failed to adjust volume",
+        "apiKeyPlaceholder": "Enter ElevenLabs API Key",
+        "agentIdPlaceholder": "Enter Agent ID",
+        "setupButton": "Setup Voice Assistant",
+        "setupInstructions": "Get your API key and Agent ID from ElevenLabs dashboard",
+        "inactive": "Inactive"
+      },
       
       // Languages
       "language": "Language",

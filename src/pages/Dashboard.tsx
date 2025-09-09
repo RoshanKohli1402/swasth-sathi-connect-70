@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { AnimatedBackground } from "@/components/common/AnimatedBackground";
-import { SatelliteMap } from "@/components/map/SatelliteMap";
-import { VoiceController } from "@/components/voice/VoiceController";
+import { RiskHeatmap } from "@/components/heatmap/RiskHeatmap";
+import { EnhancedVoiceController } from "@/components/voice/EnhancedVoiceController";
 import { Button } from "@/components/ui/button";
 import { northeastStates } from "@/data/northeastStates";
 import { toast } from "sonner";
@@ -102,9 +102,12 @@ export function Dashboard() {
           </div>
           
           <div className="flex items-center space-x-3 animate-slide-in-right">
-            <VoiceController onQuickAction={(action) => {
-              if (action === 'refresh') refreshData();
-            }} />
+            <EnhancedVoiceController 
+              onQuickAction={(action) => {
+                if (action === 'refresh') refreshData();
+              }}
+              onRiskQuery={(query) => console.log('Risk query:', query)}
+            />
             <Button variant="glass" size="sm" onClick={refreshData} className="flex items-center space-x-2">
               <RefreshCw className="w-4 h-4" />
               <span>{t('refresh_data')}</span>
@@ -177,9 +180,11 @@ export function Dashboard() {
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Northeast India Map */}
+          {/* Risk Prediction Heatmap */}
           <div className="lg:col-span-2 space-y-6">
-            <SatelliteMap />
+            <RiskHeatmap onStateSelect={(stateName, riskData) => {
+              console.log('Selected state:', stateName, riskData);
+            }} />
             
             {/* Outbreak Trend Chart */}
             <GlassCard hover>
