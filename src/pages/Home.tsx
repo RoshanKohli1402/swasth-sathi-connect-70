@@ -70,7 +70,8 @@ export function Home() {
               <div className="space-y-5">
                 <div className="space-y-3">
                   <h1 className="text-4xl lg:text-6xl font-bold gradient-text animate-fade-in">
-                    Real-time Community Health
+                    <span className="block">Swastha Sarthi</span>
+                    <span className="block text-2xl lg:text-3xl mt-2 text-muted-foreground">Real-time Community Health</span>
                   </h1>
                   <p className="text-xl lg:text-2xl text-muted-foreground animate-slide-in-right">
                     Monitor water quality, track disease outbreaks, and protect communities 
@@ -136,7 +137,7 @@ export function Home() {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accent-cyan to-accent-purple flex items-center justify-center">
                       <Heart className="w-4 h-4 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground">About Swastha Sarthi</h3>
+                    <h3 className="text-xl font-bold text-foreground">About <span className="gradient-text">Swastha Sarthi</span></h3>
                   </div>
                   
                   <div className="text-muted-foreground space-y-3 text-sm leading-relaxed">

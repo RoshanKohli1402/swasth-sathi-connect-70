@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Zap, Shield } from 'lucide-react';
+import { AlertTriangle, Zap, Shield, Activity, TrendingUp } from 'lucide-react';
 import { GlassCard } from '@/components/common/GlassCard';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 interface RiskData {
@@ -23,10 +24,11 @@ export function RiskHeatmap({ onStateSelect }: RiskHeatmapProps) {
   const { t } = useTranslation();
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [riskData, setRiskData] = useState<RiskData[]>([]);
+  const [filter, setFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
 
   useEffect(() => {
     generateRiskData();
-    const interval = setInterval(generateRiskData, 30000); // Update every 30 seconds
+    const interval = setInterval(generateRiskData, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -41,7 +43,6 @@ export function RiskHeatmap({ onStateSelect }: RiskHeatmapProps) {
       const waterQuality = Math.random() * 100;
       const population = Math.floor(Math.random() * 1000000) + 500000;
       
-      // Risk calculation algorithm
       const riskScore = calculateRiskScore(cases, waterQuality, population);
       
       let riskLevel: 'high' | 'medium' | 'low';
@@ -62,7 +63,6 @@ export function RiskHeatmap({ onStateSelect }: RiskHeatmapProps) {
 
     setRiskData(newRiskData);
     
-    // Check for high risk alerts
     const highRiskStates = newRiskData.filter(data => data.riskLevel === 'high');
     if (highRiskStates.length > 0) {
       highRiskStates.forEach(state => {
@@ -91,20 +91,12 @@ export function RiskHeatmap({ onStateSelect }: RiskHeatmapProps) {
     return allFactors.slice(0, factorCount);
   };
 
-  const getRiskColor = (riskLevel: 'high' | 'medium' | 'low') => {
-    switch (riskLevel) {
-      case 'high': return 'bg-red-500/20 border-red-500/40 hover:bg-red-500/30';
-      case 'medium': return 'bg-yellow-500/20 border-yellow-500/40 hover:bg-yellow-500/30';
-      case 'low': return 'bg-green-500/20 border-green-500/40 hover:bg-green-500/30';
-    }
-  };
-
-  const getRiskIcon = (riskLevel: 'high' | 'medium' | 'low') => {
-    switch (riskLevel) {
-      case 'high': return <AlertTriangle className="w-5 h-5 text-red-400" />;
-      case 'medium': return <Zap className="w-5 h-5 text-yellow-400" />;
-      case 'low': return <Shield className="w-5 h-5 text-green-400" />;
-    }
+  const filteredData = filter === 'all' ? riskData : riskData.filter(data => data.riskLevel === filter);
+  
+  const riskCounts = {
+    high: riskData.filter(d => d.riskLevel === 'high').length,
+    medium: riskData.filter(d => d.riskLevel === 'medium').length,
+    low: riskData.filter(d => d.riskLevel === 'low').length,
   };
 
   const handleStateClick = (state: RiskData) => {
@@ -113,111 +105,205 @@ export function RiskHeatmap({ onStateSelect }: RiskHeatmapProps) {
   };
 
   return (
-    <GlassCard className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-primary">
-          {t('dashboard.riskPrediction')}
-        </h3>
-        <Badge variant="outline" className="text-xs">
-          {t('dashboard.realTime')}
-        </Badge>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        {riskData.map((data) => (
-          <div
-            key={data.state}
-            onClick={() => handleStateClick(data)}
-            className={`
-              relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-300
-              ${getRiskColor(data.riskLevel)}
-              ${selectedState === data.state ? 'ring-2 ring-primary/50' : ''}
-            `}
-          >
-            <div className="flex items-start justify-between mb-2">
-              {getRiskIcon(data.riskLevel)}
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground">
-                  {data.confidence}%
-                </div>
-              </div>
+    <div className="space-y-6">
+      {/* Risk Overview Cards */}
+      <div className="grid grid-cols-3 gap-4">
+        <div 
+          className={`p-4 cursor-pointer transition-all duration-300 border-2 rounded-lg ${
+            filter === 'high' ? 'border-red-500/50 bg-red-500/10' : 'border-red-500/20 hover:border-red-500/40'
+          } bg-glass-light`}
+          onClick={() => setFilter(filter === 'high' ? 'all' : 'high')}
+        >
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-red-500/20">
+              <AlertTriangle className="w-5 h-5 text-red-400" />
             </div>
-            
-            <h4 className="font-medium text-sm mb-1">{data.state}</h4>
-            
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">
-                {data.cases} {t('dashboard.cases')}
-              </span>
-              <Badge 
-                variant={data.riskLevel === 'high' ? 'destructive' : 
-                        data.riskLevel === 'medium' ? 'default' : 'secondary'}
-                className="text-xs"
-              >
-                {t(`dashboard.risk.${data.riskLevel}`)}
-              </Badge>
+            <div>
+              <div className="text-2xl font-bold text-red-400">{riskCounts.high}</div>
+              <div className="text-sm text-muted-foreground">High Risk</div>
             </div>
           </div>
-        ))}
+        </div>
+
+        <div 
+          className={`p-4 cursor-pointer transition-all duration-300 border-2 rounded-lg ${
+            filter === 'medium' ? 'border-yellow-500/50 bg-yellow-500/10' : 'border-yellow-500/20 hover:border-yellow-500/40'
+          } bg-glass-light`}
+          onClick={() => setFilter(filter === 'medium' ? 'all' : 'medium')}
+        >
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-yellow-500/20">
+              <Zap className="w-5 h-5 text-yellow-400" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-yellow-400">{riskCounts.medium}</div>
+              <div className="text-sm text-muted-foreground">Medium Risk</div>
+            </div>
+          </div>
+        </div>
+
+        <div 
+          className={`p-4 cursor-pointer transition-all duration-300 border-2 rounded-lg ${
+            filter === 'low' ? 'border-green-500/50 bg-green-500/10' : 'border-green-500/20 hover:border-green-500/40'
+          } bg-glass-light`}
+          onClick={() => setFilter(filter === 'low' ? 'all' : 'low')}
+        >
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-green-500/20">
+              <Shield className="w-5 h-5 text-green-400" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-green-400">{riskCounts.low}</div>
+              <div className="text-sm text-muted-foreground">Low Risk</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {selectedState && (
-        <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-          <h4 className="font-medium mb-3">{selectedState} - {t('dashboard.riskDetails')}</h4>
-          {(() => {
-            const state = riskData.find(d => d.state === selectedState);
-            if (!state) return null;
-            
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {t('dashboard.riskFactors')}:
-                  </p>
-                  <ul className="text-sm space-y-1">
-                    {state.factors.map((factor, index) => (
-                      <li key={index} className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                        <span>{factor}</span>
-                      </li>
-                    ))}
-                  </ul>
+      {/* Main Risk Map */}
+      <GlassCard className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <h3 className="text-xl font-semibold text-primary">Northeast India Risk Assessment</h3>
+            {filter !== 'all' && (
+              <Badge variant="outline" className="text-xs capitalize">
+                Showing: {filter} risk areas
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Badge variant="outline" className="text-xs">Real-time</Badge>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setFilter('all')}
+              className={filter !== 'all' ? 'visible' : 'invisible'}
+            >
+              Show All
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          {filteredData.map((data) => (
+            <div
+              key={data.state}
+              onClick={() => handleStateClick(data)}
+              className={`
+                relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-300
+                ${data.riskLevel === 'high' ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30' : ''}
+                ${data.riskLevel === 'medium' ? 'bg-yellow-500/20 border-yellow-500/50 hover:bg-yellow-500/30' : ''}
+                ${data.riskLevel === 'low' ? 'bg-green-500/20 border-green-500/50 hover:bg-green-500/30' : ''}
+                ${selectedState === data.state ? 'ring-2 ring-primary/50 scale-105' : 'hover:scale-102'}
+              `}
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-1 rounded">
+                  {data.riskLevel === 'high' && <AlertTriangle className="w-5 h-5 text-red-400" />}
+                  {data.riskLevel === 'medium' && <Zap className="w-5 h-5 text-yellow-400" />}
+                  {data.riskLevel === 'low' && <Shield className="w-5 h-5 text-green-400" />}
                 </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>{t('dashboard.waterQuality')}:</span>
-                    <span className="font-medium">{state.waterQuality.toFixed(1)}%</span>
+                <div className="text-right">
+                  <div className="text-xs font-medium text-muted-foreground">
+                    {data.confidence}%
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>{t('dashboard.population')}:</span>
-                    <span className="font-medium">{state.population.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>{t('dashboard.confidence')}:</span>
-                    <span className="font-medium">{state.confidence}%</span>
-                  </div>
+                  <div className="text-xs text-muted-foreground">confidence</div>
                 </div>
               </div>
-            );
-          })()}
+              
+              <h4 className="font-semibold text-sm mb-2 text-foreground">{data.state}</h4>
+              
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Cases:</span>
+                  <span className="font-medium">{data.cases}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Water Quality:</span>
+                  <span className="font-medium">{data.waterQuality.toFixed(1)}%</span>
+                </div>
+              </div>
+              
+              <div className="mt-3">
+                <Badge 
+                  variant={data.riskLevel === 'high' ? 'destructive' : 
+                          data.riskLevel === 'medium' ? 'default' : 'secondary'}
+                  className="text-xs w-full justify-center"
+                >
+                  {data.riskLevel.toUpperCase()} RISK
+                </Badge>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
 
-      <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-border/50">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-red-500/60 rounded-full" />
-          <span className="text-xs text-muted-foreground">{t('dashboard.risk.high')}</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-yellow-500/60 rounded-full" />
-          <span className="text-xs text-muted-foreground">{t('dashboard.risk.medium')}</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-green-500/60 rounded-full" />
-          <span className="text-xs text-muted-foreground">{t('dashboard.risk.low')}</span>
-        </div>
-      </div>
-    </GlassCard>
+        {filteredData.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p>No states match the selected risk filter</p>
+          </div>
+        )}
+
+        {selectedState && (
+          <div className="mt-6 p-6 bg-muted/30 rounded-lg border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-lg">{selectedState} - Detailed Risk Analysis</h4>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedState(null)}>
+                ✕
+              </Button>
+            </div>
+            
+            {(() => {
+              const state = riskData.find(d => d.state === selectedState);
+              if (!state) return null;
+              
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h5 className="font-medium mb-3 text-sm text-muted-foreground uppercase tracking-wide">
+                      Risk Factors
+                    </h5>
+                    <div className="space-y-2">
+                      {state.factors.map((factor, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-2 rounded bg-background/50">
+                          <div className="w-2 h-2 bg-primary rounded-full" />
+                          <span className="text-sm">{factor}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h5 className="font-medium mb-3 text-sm text-muted-foreground uppercase tracking-wide">
+                      Key Metrics
+                    </h5>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-2 rounded bg-background/50">
+                        <span className="text-sm">Population</span>
+                        <span className="font-semibold">{state.population.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded bg-background/50">
+                        <span className="text-sm">Active Cases</span>
+                        <span className="font-semibold text-red-400">{state.cases}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded bg-background/50">
+                        <span className="text-sm">Water Quality</span>
+                        <span className={`font-semibold ${state.waterQuality > 70 ? 'text-green-400' : state.waterQuality > 40 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {state.waterQuality.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded bg-background/50">
+                        <span className="text-sm">Risk Confidence</span>
+                        <span className="font-semibold text-primary">{state.confidence}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+      </GlassCard>
+    </div>
   );
 }
