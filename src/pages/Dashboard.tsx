@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { AnimatedBackground } from "@/components/common/AnimatedBackground";
 import { RiskHeatmap } from "@/components/heatmap/RiskHeatmap";
-import { EnhancedVoiceController } from "@/components/voice/EnhancedVoiceController";
+import { SimpleVoiceController } from "@/components/voice/SimpleVoiceController";
 import { Button } from "@/components/ui/button";
 import { northeastStates } from "@/data/northeastStates";
 import { toast } from "sonner";
@@ -102,7 +102,7 @@ export function Dashboard() {
           </div>
           
           <div className="flex items-center space-x-3 animate-slide-in-right">
-            <EnhancedVoiceController 
+            <SimpleVoiceController 
               onQuickAction={(action) => {
                 if (action === 'refresh') refreshData();
               }}
